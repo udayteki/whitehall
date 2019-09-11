@@ -1,5 +1,8 @@
 // BASE STYLESHEET COMPILER
 
+$govuk-use-legacy-palette: true;
+$govuk-typography-use-rem: false;
+
 // STYLEGUIDE
 // Mixins to be shared across gov.uk sites. Anything set in these
 // files can be used in the view files.
