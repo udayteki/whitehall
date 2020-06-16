@@ -11,18 +11,27 @@ module PublishingApi
     delegate :content_id, to: :item
 
     def content
-      {
-        title:, title,
-        locale: locale,
-        details: details, 
+      content = BaseItemPresenter.new(
+        item,
+        title: title,
+        update_type: update_type, 
+      ).base_attributes
+      
+      content.merge!(
+        locale: locale, 
+        details: details,
         publishing_app: "whitehall",
-        update_type: update_type,
         document_type: document_type,
-        public_updated_at: public_updated_at, #placeholder
+        public_updated_at: public_updated_at,
         schema_name: "ministers_index"
-      }
+      )
     end
 
-    
+    private
+
+    def details 
+      {
+
+      }
   end
 end
