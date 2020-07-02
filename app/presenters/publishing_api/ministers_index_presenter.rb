@@ -3,7 +3,7 @@ module PublishingApi
     attr_accessor :item
     attr_accessor :update_type
 
-    def initialize(update_type: nil)
+    def initialize(item: nil, update_type: nil)
       self.item = nil
       self.update_type = update_type || "major"
     end
@@ -13,24 +13,39 @@ module PublishingApi
     def content
       content = BaseItemPresenter.new(
         item,
-        title: title,
+        title: 'title',
         update_type: update_type,
       ).base_attributes
 
       content.merge!(
-        locale: locale,
+        base_path: "/government/ministers",
         details: details,
+        routes: routes,
         publishing_app: "whitehall",
-        document_type: document_type,
-        public_updated_at: public_updated_at,
+        document_type: 'ministers_index',
+        #public_updated_at: Time.zone.now.iso8601,
+        rendering_app: Whitehall::RenderingApp::WHITEHALL_FRONTEND,
         schema_name: "ministers_index",
       )
     end
 
   private
 
+    #def public_updated_at
     def details
-      @is_during_reshuffle
+      if SitewideSetting.find_by(key: :minister_reshuffle_mode)
+        {
+          reshuffle: "Reshuffle mode is on"
+        }
+      else
+        {
+          reshuffle: "Reshuffle mode is off"
+        }
+      end
+    end
+
+    def routes 
+      ["/government/ministers.#{I18n.locale.to_s}"]
     end
   end
 end
