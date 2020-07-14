@@ -13,7 +13,7 @@ module PublishingApi
     def content
       content = BaseItemPresenter.new(
         item,
-        title: 'title',
+        title: 'ministers_index',
         update_type: update_type,
       ).base_attributes
 
@@ -23,7 +23,6 @@ module PublishingApi
         routes: routes,
         publishing_app: "whitehall",
         document_type: 'ministers_index',
-        #public_updated_at: Time.zone.now.iso8601,
         rendering_app: Whitehall::RenderingApp::WHITEHALL_FRONTEND,
         schema_name: "ministers_index",
       )
@@ -31,21 +30,19 @@ module PublishingApi
 
   private
 
-    #def public_updated_at
     def details
-      if SitewideSetting.find_by(key: :minister_reshuffle_mode)
-        {
-          reshuffle: "Reshuffle mode is on"
-        }
-      else
-        {
-          reshuffle: "Reshuffle mode is off"
-        }
-      end
+      details = {
+          :reshuffle => { :message => ("Reshuffle mode is on" if SitewideSetting.find_by(key: :minister_reshuffle_mode))}.compact
+      } 
     end
 
     def routes 
-      ["/government/ministers.#{I18n.locale.to_s}"]
+      routes = [
+        {
+          :path => "/government/ministers.#{I18n.locale.to_s}",
+          :type => "exact"
+        },
+      ]
     end
   end
 end
