@@ -6,6 +6,9 @@ class OrganisationRole < ApplicationRecord
 
   before_create :set_ordering, if: -> { ordering.blank? }
 
+  after_create :republish_organisation_to_publishing_api
+  after_destroy :republish_organisation_to_publishing_api
+
 private
 
   def set_ordering
@@ -15,5 +18,9 @@ private
   def next_ordering
     max = organisation.organisation_roles.maximum(:ordering)
     max ? max + 1 : 0
+  end
+
+  def republish_organisation_to_publishing_api
+    Whitehall::PublishingApi.republish_async(organisation)
   end
 end
