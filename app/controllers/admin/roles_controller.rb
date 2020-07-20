@@ -24,7 +24,10 @@ class Admin::RolesController < Admin::BaseController
   end
 
   def update
+    old_org_ids = @role.organisation_ids
     if @role.update(role_params)
+      new_org_ids = @role.reload.organisation_ids
+      (new_org_ids - old_org_ids).each { |id| Whitehall::PublishingApi.republish_async(Organisation.find(id)) }
       redirect_to index_or_edit_path, notice: %("#{@role.name}" updated.)
     else
       render action: "edit"
@@ -33,7 +36,9 @@ class Admin::RolesController < Admin::BaseController
 
   def destroy
     notice = %("#{@role.name}" destroyed.)
+    organisations = @role.organisations
     if @role.destroy
+      organisations.each { |o| Whitehall::PublishingApi.republish_async(o) }
       redirect_to admin_roles_path, notice: notice
     else
       message = "Cannot destroy a role with appointments, organisations, or documents"
