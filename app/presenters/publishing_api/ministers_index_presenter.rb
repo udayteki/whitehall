@@ -18,31 +18,39 @@ module PublishingApi
       ).base_attributes
 
       content.merge!(
-        base_path: "/government/ministers",
+        base_path: base_path,
         details: details,
-        routes: routes,
         publishing_app: "whitehall",
         document_type: 'ministers_index',
         rendering_app: Whitehall::RenderingApp::WHITEHALL_FRONTEND,
         schema_name: "ministers_index",
+      )
+
+      content.merge!(
+        PayloadBuilder::Routes.for(base_path, additional_routes: ["cy"])
       )
     end
 
   private
 
     def details
-      details = {
-          :reshuffle => { :message => ("Reshuffle mode is on" if SitewideSetting.find_by(key: :minister_reshuffle_mode))}.compact
-      } 
+
+      details = {}
+      setting = SitewideSetting.find_by(key: :minister_reshuffle_mode)
+
+      if setting 
+        details = {
+          :reshuffle => { 
+            :message => setting.on ? setting.govspeak : nil
+          }.compact
+        } 
+      end
+      details
     end
 
-    def routes 
-      routes = [
-        {
-          :path => "/government/ministers.#{I18n.locale.to_s}",
-          :type => "exact"
-        },
-      ]
+    def base_path
+      "/government/ministers"
     end
+
   end
 end

@@ -1,6 +1,6 @@
 require "test_helper"
 
-class PublishingApi::MininstersIndexPresenterTest < ActionView::TestCase
+class PublishingApi::MinistersIndexPresenterTest < ActionView::TestCase
   def present(options = {})
     PublishingApi::MinistersIndexPresenter.new
   end
