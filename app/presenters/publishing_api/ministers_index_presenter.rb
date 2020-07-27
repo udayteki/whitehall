@@ -20,15 +20,20 @@ module PublishingApi
       content.merge!(
         base_path: base_path,
         details: details,
-        publishing_app: "whitehall",
         document_type: 'ministers_index',
         rendering_app: Whitehall::RenderingApp::WHITEHALL_FRONTEND,
         schema_name: "ministers_index",
       )
 
-      content.merge!(
-        PayloadBuilder::Routes.for(base_path, additional_routes: ["cy"])
-      )
+      if I18n.locale.to_s == "cy"
+        content.merge!(
+          PayloadBuilder::Routes.for(base_path, additional_routes: ["cy"])
+        )
+      else
+        content.merge!(
+          PayloadBuilder::Routes.for(base_path)
+        )
+      end
     end
 
   private

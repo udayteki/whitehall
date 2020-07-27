@@ -8,6 +8,62 @@ class PublishingApi::MinistersIndexPresenterTest < ActionView::TestCase
   test "presenter is valid against ministers index schema" do
     presented_item = present()
 
+    print presented_item.content
     assert_valid_against_schema(presented_item.content, "ministers_index")
+  end
+  
+  test "presents ministers index page ready for the publishing-api" do
+    presented_item = present()
+
+    expected_hash = {
+      title: "ministers_index",
+      locale: "en",
+      publishing_app: "whitehall",
+      redirects: [],
+      update_type: "major",
+      base_path: "/government/ministers",
+      details: {},
+      document_type: "ministers_index",
+      rendering_app: "whitehall-frontend",
+      schema_name: "ministers_index",
+      routes: [
+        {
+          path: "/government/ministers",
+          type: "exact"
+        }
+      ]
+    }
+
+    assert_equal expected_hash, presented_item.content
+  end
+
+  test "presents ministers index page ready for the publishing-api in welsh" do
+    I18n.locale = :cy
+    presented_item = present()
+
+    expected_hash = {
+      title: "ministers_index",
+      locale: "cy",
+      publishing_app: "whitehall",
+      redirects: [],
+      update_type: "major",
+      base_path: "/government/ministers",
+      details: {},
+      document_type: "ministers_index",
+      rendering_app: "whitehall-frontend",
+      schema_name: "ministers_index",
+      routes: [
+        {
+          path: "/government/ministers",
+          type: "exact"
+        },
+        {
+          path: "/government/ministers.cy",
+          type: "exact"
+        }
+      ]
+    }
+
+    assert_equal expected_hash, presented_item.content
   end
 end
