@@ -1,23 +1,19 @@
 require "test_helper"
 
 class PublishingApi::MinistersIndexPresenterTest < ActionView::TestCase
-  def present(options = {})
+  def presented_item
     PublishingApi::MinistersIndexPresenter.new
-  end  
-  
+  end
+
   test "presenter is valid against ministers index schema" do
     create(:sitewide_setting, key: :minister_reshuffle_mode, on: true)
 
-    presented_item = present()
-
-    print presented_item.content
     assert_valid_against_schema(presented_item.content, "ministers_index")
   end
-  
+
   test "presents ministers index page ready for the publishing-api in english" do
     create(:sitewide_setting, key: :minister_reshuffle_mode, on: false)
     I18n.locale = :en
-    presented_item = present()
 
     expected_hash = {
       title: "ministers_index",
@@ -33,9 +29,9 @@ class PublishingApi::MinistersIndexPresenterTest < ActionView::TestCase
       routes: [
         {
           path: "/government/ministers",
-          type: "exact"
-        }
-      ]
+          type: "exact",
+        },
+      ],
     }
 
     assert_equal expected_hash, presented_item.content
@@ -44,7 +40,6 @@ class PublishingApi::MinistersIndexPresenterTest < ActionView::TestCase
   test "presents ministers index page ready for the publishing-api in english with reshuffle mode" do
     create(:sitewide_setting, key: :minister_reshuffle_mode, on: true)
     I18n.locale = :en
-    presented_item = present()
 
     expected_hash = {
       title: "ministers_index",
@@ -55,18 +50,18 @@ class PublishingApi::MinistersIndexPresenterTest < ActionView::TestCase
       base_path: "/government/ministers",
       details: {
         reshuffle: {
-          message: "example text"
-          }
+          message: "example text",
         },
+      },
       document_type: "ministers_index",
       rendering_app: "whitehall-frontend",
       schema_name: "ministers_index",
       routes: [
         {
           path: "/government/ministers",
-          type: "exact"
-        }
-      ]
+          type: "exact",
+        },
+      ],
     }
 
     assert_equal expected_hash, presented_item.content
@@ -74,9 +69,7 @@ class PublishingApi::MinistersIndexPresenterTest < ActionView::TestCase
 
   test "presents ministers index page ready for the publishing-api in welsh" do
     create(:sitewide_setting, key: :minister_reshuffle_mode, on: false)
-
     I18n.locale = :cy
-    presented_item = present()
 
     expected_hash = {
       title: "ministers_index",
@@ -92,9 +85,9 @@ class PublishingApi::MinistersIndexPresenterTest < ActionView::TestCase
       routes: [
         {
           path: "/government/ministers.cy",
-          type: "exact"
-        }
-      ]
+          type: "exact",
+        },
+      ],
     }
 
     assert_equal expected_hash, presented_item.content

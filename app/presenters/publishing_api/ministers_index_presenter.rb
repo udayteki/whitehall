@@ -31,19 +31,17 @@ module PublishingApi
   private
 
     def details
-
       setting = SitewideSetting.find_by(key: :minister_reshuffle_mode)
 
       return {} unless setting.on
+
       { reshuffle: { message: setting.govspeak } }
     end
 
     def base_path
-
       return "/government/ministers" if I18n.locale == :en
 
       "/government/ministers.#{I18n.locale}"
     end
-
   end
 end
